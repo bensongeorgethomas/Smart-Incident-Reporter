@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Incident Reporter – Civic Intelligence</title>
+    <meta name="description"
+        content="AI-powered civic incident analysis using Gemini Pro Vision and Google Cloud Vision API">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+    <!-- Animated background mesh -->
+    <div class="bg-mesh"></div>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <circle cx="12" cy="12" r="4" />
+                        <line x1="12" y1="2" x2="12" y2="4" />
+                        <line x1="12" y1="20" x2="12" y2="22" />
+                        <line x1="2" y1="12" x2="4" y2="12" />
+                        <line x1="20" y1="12" x2="22" y2="12" />
+                    </svg>
+                </div>
+                <div>
+                    <h1>Civic Intelligence</h1>
+                    <p class="subtitle">Smart Incident Analysis Dashboard</p>
+                </div>
+            </div>
+            <button class="btn-history" id="toggleHistory" title="View History">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7" />
+                    <rect x="14" y="3" width="7" height="7" />
+                    <rect x="3" y="14" width="7" height="7" />
+                    <rect x="14" y="14" width="7" height="7" />
+                </svg>
+                <span>History</span>
+            </button>
+        </header>
+
+        <!-- Upload Section -->
+        <section class="upload-section" id="uploadSection">
+            <div class="upload-zone" id="dropZone">
+                <div class="upload-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                </div>
+                <h2>Drop your file here</h2>
+                <p>or click to browse files</p>
+                <p class="upload-hint">Images: JPEG, PNG, WebP, GIF &nbsp;|&nbsp; Videos: MP4, WebM, MOV (up to 10s)</p>
+                <input type="file" id="fileInput"
+                    accept="image/jpeg,image/png,image/webp,image/gif,video/mp4,video/webm,video/quicktime" hidden>
+            </div>
+
+            <!-- Preview -->
+            <div class="preview-container" id="previewContainer" style="display:none;">
+                <div class="preview-card">
+                    <img id="previewImage" alt="Preview" style="display:none;">
+                    <video id="previewVideo" controls muted style="display:none;"></video>
+                    <div class="preview-info">
+                        <span class="preview-name" id="previewName"></span>
+                        <span class="preview-size" id="previewSize"></span>
+                        <span class="preview-type" id="previewType"></span>
+                    </div>
+                    <div class="preview-actions">
+                        <button class="btn btn-primary" id="uploadBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Upload &amp; Analyze
+                        </button>
+                        <button class="btn btn-ghost" id="cancelBtn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Processing Indicator -->
+        <section class="processing-section" id="processingSection" style="display:none;">
+            <div class="processing-card">
+                <div class="spinner"></div>
+                <h3>Analyzing your incident...</h3>
+                <p class="processing-status" id="processingStatus">Uploading to Cloud Storage</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <p class="processing-detail" id="processingDetail">Running Vision AI + Gemini Civic Intelligence</p>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="resultsSection" style="display:none;">
+            <div class="results-header">
+                <h2>Civic Intelligence Report</h2>
+                <button class="btn btn-ghost" id="newUploadBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    New Report
+                </button>
+            </div>
+
+            <!-- AI Authenticity Banner -->
+            <div class="authenticity-banner" id="authenticityBanner" style="display:none;">
+                <div class="authenticity-icon" id="authenticityIcon"></div>
+                <div class="authenticity-content">
+                    <div class="authenticity-title" id="authenticityTitle"></div>
+                    <div class="authenticity-detail" id="authenticityDetail"></div>
+                    <div class="authenticity-indicators" id="authenticityIndicators"></div>
+                </div>
+            </div>
+
+            <!-- Severity Banner -->
+            <div class="severity-banner" id="severityBanner">
+                <div class="severity-gauge">
+                    <div class="severity-fill" id="severityFill"></div>
+                </div>
+                <div class="severity-info">
+                    <span class="severity-level" id="severityLevel"></span>
+                    <span class="severity-label" id="severityBannerLabel"></span>
+                    <span class="urgency-badge" id="urgencyBadge"></span>
+                </div>
+            </div>
+
+            <!-- Scene Description Card -->
+            <div class="result-card scene-card" id="sceneCard">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    Scene Assessment
+                </h4>
+                <p class="scene-description" id="sceneDescription"></p>
+                <div class="scene-meta">
+                    <span class="incident-type-badge" id="incidentTypeBadge"></span>
+                    <span class="location-type" id="locationTypeBadge"></span>
+                </div>
+            </div>
+
+            <div class="results-grid">
+                <!-- Thumbnail Card -->
+                <div class="result-card thumbnail-card">
+                    <h4>Processed Thumbnail</h4>
+                    <div class="thumbnail-wrapper">
+                        <img id="resultThumbnail" alt="Processed thumbnail">
+                    </div>
+                    <div class="file-info" id="fileInfo"></div>
+                </div>
+
+                <!-- Root Cause Card -->
+                <div class="result-card cause-card">
+                    <h4>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                            <line x1="12" y1="17" x2="12.01" y2="17" />
+                        </svg>
+                        Root Cause Analysis
+                    </h4>
+                    <div class="cause-content" id="causeContent"></div>
+                </div>
+
+                <!-- Labels Card -->
+                <div class="result-card labels-card">
+                    <h4>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                            <line x1="7" y1="7" x2="7.01" y2="7" />
+                        </svg>
+                        Vision AI Labels
+                    </h4>
+                    <div class="top-label" id="topLabel"></div>
+                    <div class="labels-list" id="labelsList"></div>
+                </div>
+
+                <!-- SafeSearch Card -->
+                <div class="result-card safesearch-card">
+                    <h4>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        SafeSearch Moderation
+                    </h4>
+                    <div class="safesearch-status" id="safesearchStatus"></div>
+                    <div class="safesearch-details" id="safesearchDetails"></div>
+                </div>
+            </div>
+
+            <!-- Predictive Risks -->
+            <div class="result-card risks-card" id="risksCard">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                        <line x1="12" y1="9" x2="12" y2="13" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                    </svg>
+                    Predictive Risk Analysis
+                </h4>
+                <div class="risks-timeline" id="risksTimeline"></div>
+            </div>
+
+            <!-- Public Safety Impact -->
+            <div class="result-card impact-card" id="impactCard">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Public Safety Impact
+                </h4>
+                <div class="impact-content" id="impactContent"></div>
+            </div>
+
+            <!-- Recommended Actions -->
+            <div class="result-card actions-card" id="actionsCard">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 11 12 14 22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    Recommended Actions
+                </h4>
+                <div class="actions-list" id="actionsList"></div>
+            </div>
+
+            <!-- Video Analysis (shown only for videos) -->
+            <div class="result-card video-card" id="videoCard" style="display:none;">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="23 7 16 12 23 17 23 7" />
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                    </svg>
+                    Video Temporal Analysis
+                </h4>
+                <div class="video-content" id="videoContent"></div>
+            </div>
+
+            <!-- Environmental Context -->
+            <div class="result-card env-card" id="envCard">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
+                    Environmental Context
+                </h4>
+                <div class="env-content" id="envContent"></div>
+            </div>
+
+            <!-- Severity Justification -->
+            <div class="result-card justification-card" id="justificationCard">
+                <h4>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                    </svg>
+                    Severity Justification
+                </h4>
+                <p class="justification-text" id="justificationText"></p>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section class="history-section" id="historySection" style="display:none;">
+            <div class="results-header">
+                <h2>Processing History</h2>
+                <button class="btn btn-ghost" id="closeHistory">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                    Close
+                </button>
+            </div>
+            <div class="history-grid" id="historyGrid"></div>
+        </section>
+    </div>
+
+    <script src="/script.js"></script>
+</body>
+
+</html>

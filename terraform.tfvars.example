@@ -1,0 +1,11 @@
+# Copy this file to terraform.tfvars and fill in real values.
+
+project_id = "your-gcp-project-id"
+region     = "us-central1"
+
+# Required for current Terraform module inputs
+sightengine_user   = "your-sightengine-user-id"
+sightengine_secret = "your-sightengine-secret"
+
+# Optional override (default is already set in variables.tf)
+# gemini_model = "gemini-2.5-pro"

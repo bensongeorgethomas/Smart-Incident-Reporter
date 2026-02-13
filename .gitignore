@@ -1,0 +1,40 @@
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.secrets.json
+
+# Terraform local state and overrides
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+terraform.tfvars
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Build and temp artifacts
+.tmp/
+*.zip
+
+# Local test artifacts
+test_output_*.txt
+test_result_*.txt
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
