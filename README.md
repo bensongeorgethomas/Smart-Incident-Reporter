@@ -2,9 +2,7 @@
 
 > **A cloud-native, event-driven pipeline that uses AI to automate civic issue verification and triage.**
 
-![Dashboard Preview](image.png)
-
-Citizens upload photos or videos of civic issues (potholes, broken street lights, illegal dumping). Instead of manual review, the system **automatically classifies, moderates, and optimizes** every report using **Google Cloud Vision AI**, **Gemini Pro**, **Sightengine**, and **ZeroGPT** — all triggered serverlessly the instant a file lands in Cloud Storage.
+Citizens upload photos or videos of civic issues (potholes, broken street lights, illegal dumping). Instead of manual review, the system **automatically classifies, moderates, and optimizes** every report using **Google Cloud Vision AI**, **Gemini Pro**, and **Sightengine** — all triggered serverlessly the instant a file lands in Cloud Storage.
 
 ---
 
@@ -12,7 +10,7 @@ Citizens upload photos or videos of civic issues (potholes, broken street lights
 
 - **📸 Multi-Modal Analysis**: Processes both **Images** and **Videos**.
 - **🧠 Civic Intelligence**: Uses **Gemini Pro Vision** to understand the context, severity, and urgency of incidents.
-- **🤖 Authenticity Verification**: Detects AI-generated content (Deepfakes) using a hybrid check (Gemini Forensics + ZeroGPT + Sightengine).
+- **🤖 Authenticity Verification**: Detects AI-generated content (Deepfakes) using a hybrid check (Gemini Forensics + Sightengine).
 - **🏷️ Auto-Tagging**: Google Cloud Vision AI for object detection and labeling.
 - **🛡️ Content Moderation**: Automatically flags inappropriate or unsafe content.
 - **📊 Live Dashboard**: A local FastAPI webapp to visualize uploads and analysis results in real-time.
@@ -29,7 +27,6 @@ graph LR
     subgraph "Civic Intelligence Engine"
         CloudFunction -->|Label/SafeSearch| VisionAPI[Vision API]
         CloudFunction -->|Deep Analysis| Gemini[Gemini Pro Vision]
-        CloudFunction -->|Deepfake Check| ZeroGPT[ZeroGPT API]
         CloudFunction -->|Manipulation Check| Sightengine[Sightengine API]
     end
     
