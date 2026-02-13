@@ -1,4 +1,4 @@
-# 🗣️ Voice of the People — Civic Intelligence Engine
+# Civic Intelligence Engine
 
 > **A cloud-native, event-driven pipeline that uses AI to automate civic issue verification and triage.**
 
