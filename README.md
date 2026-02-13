@@ -15,7 +15,7 @@ Citizens upload photos or videos of civic issues (potholes, broken street lights
 - **🤖 Authenticity Verification**: Detects AI-generated content (Deepfakes) using a hybrid check (Gemini Forensics + ZeroGPT + Sightengine).
 - **🏷️ Auto-Tagging**: Google Cloud Vision AI for object detection and labeling.
 - **🛡️ Content Moderation**: Automatically flags inappropriate or unsafe content.
-- **📊 Live Dashboard**: A local Flask webapp to visualize uploads and analysis results in real-time.
+- **📊 Live Dashboard**: A local FastAPI webapp to visualize uploads and analysis results in real-time.
 
 ---
 
@@ -49,7 +49,7 @@ vision/
 │   ├── detectors.py               # Authenticity Checks
 │   └── prompt_templates.py        # Gemini Prompts
 └── webapp/                        # Local Dashboard
-    ├── app.py                     # Flask Backend
+    ├── app.py                     # FastAPI Backend
     └── static/                    # Frontend Assets
 ```
 
