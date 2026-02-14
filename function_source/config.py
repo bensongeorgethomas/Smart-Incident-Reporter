@@ -19,7 +19,6 @@ class Config:
     LOCATION = os.environ.get("GCP_LOCATION", "us-central1")
     
     # API Keys
-    ZEROGPT_API_KEY = os.environ.get("ZEROGPT_API_KEY")
     SIGHTENGINE_USER = os.environ.get("SIGHTENGINE_USER")
     SIGHTENGINE_SECRET = os.environ.get("SIGHTENGINE_SECRET")
 

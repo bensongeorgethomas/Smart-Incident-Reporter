@@ -42,8 +42,6 @@ civic_engine = CivicIntelligenceEngine(
     project_id=Config.PROJECT_ID,
     model_name=Config.GEMINI_MODEL,
     location=Config.LOCATION,
-    sightengine_user=Config.SIGHTENGINE_USER,
-    sightengine_secret=Config.SIGHTENGINE_SECRET,
 )
 
 # SafeSearch likelihood levels

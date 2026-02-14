@@ -11,7 +11,7 @@ from typing import Optional, Dict, Any
 from vertexai.generative_models import GenerativeModel, Part
 
 from config import Config
-from detectors import AuthenticityDetector
+
 from prompt_templates import IMAGE_ANALYSIS_PROMPT, VIDEO_ANALYSIS_PROMPT, AUTHENTICITY_PROMPT
 
 logger = logging.getLogger(__name__)
@@ -45,12 +45,11 @@ class CivicIntelligenceEngine:
         project_id: str,
         location: str = "us-central1",
         model_name: str = "gemini-2.0-flash",
-        zerogpt_api_key: Optional[str] = None,
+
         **kwargs # Support legacy args like sightengine_user
     ):
         vertexai.init(project=project_id, location=location)
         self.model = GenerativeModel(model_name)
-        self.detector = AuthenticityDetector(zerogpt_api_key=zerogpt_api_key)
         
         logger.info(f"🚀 Engine initialized: project={project_id}, model={model_name}")
 
@@ -62,10 +61,6 @@ class CivicIntelligenceEngine:
     ) -> Dict[str, Any]:
         """Runs the full pipeline: Authenticity Check -> Civic Analysis."""
         
-        # 1. ZeroGPT Hybrid check (if enabled)
-        zerogpt_result = self.detector.check_zerogpt(image_bytes)
-        if zerogpt_result and zerogpt_result.get("is_ai"):
-            return self._ai_rejection_report(zerogpt_result)
 
         # 2. Gemini Analysis
         labels_str = ", ".join(vision_labels) if vision_labels else "none detected"
@@ -76,7 +71,7 @@ class CivicIntelligenceEngine:
         gemini_auth = self._check_gemini_forensics(image_bytes, content_type)
         
         # 3. Combine Verdicts
-        auth_report = self.detector.combine_results(gemini_auth, zerogpt_result)
+        auth_report = gemini_auth
         
         if auth_report.get("is_ai_generated") and auth_report.get("confidence") == "high":
              return self._ai_rejection_report(auth_report)
@@ -98,9 +93,7 @@ class CivicIntelligenceEngine:
 
     def check_authenticity(self, image_bytes: bytes, content_type: str = "image/jpeg") -> Dict[str, Any]:
         """Backward compatible authenticity check."""
-        gemini_auth = self._check_gemini_forensics(image_bytes, content_type)
-        zerogpt_result = self.detector.check_zerogpt(image_bytes)
-        return self.detector.combine_results(gemini_auth, zerogpt_result)
+        return self._check_gemini_forensics(image_bytes, content_type)
 
     def _check_gemini_forensics(self, image_bytes: bytes, content_type: str) -> Dict[str, Any]:
         """Internal forensic check using Gemini."""

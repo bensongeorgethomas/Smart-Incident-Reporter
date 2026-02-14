@@ -33,7 +33,7 @@ def main():
         engine = CivicIntelligenceEngine(
             project_id=PROJECT_ID, 
             model_name=MODEL_NAME,
-            zerogpt_api_key=os.environ.get("ZEROGPT_API_KEY")
+
         )
         logger.info("✅ CivicIntelligenceEngine initialized successfully.")
     except Exception as e:
